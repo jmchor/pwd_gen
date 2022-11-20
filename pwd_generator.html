@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>pwdgnrtr</title>
+	</head>
+	<body>
+		<header>
+			<h1>Password Generator</h1>
+		</header>
+		<div class="content">
+			<div class="display"></div>
+
+			<div class="buttons">
+				<button data-option="letters">letters</button>
+				<button data-option="capitals">capitals</button>
+				<button data-option="numbers">numbers</button>
+				<button data-option="special">special</button>
+			</div>
+			<div class="form">
+				<form class="pwlength">
+					<input type="text" name="pwd" id="pwd_input" placeholder="Password Length" />
+					<input type="submit" value="Generate Password" />
+				</form>
+				<button class="copy">Copy password</button>
+				<button class="clear">Clear all</button>
+			</div>
+		</div>
+
+		<style>
+			html {
+				box-sizing: border-box;
+			}
+			*,
+			*:before,
+			*:after {
+				box-sizing: inherit;
+			}
+			body {
+				background-image: url('https://images.unsplash.com/photo-1582139329536-e7284fece509?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80');
+				background-size: cover;
+				background-position: 50%;
+				display: grid;
+				grid-template-columns: 1fr 2fr 1fr;
+				grid-template-rows: repeat(auto-fill, minmax(350px, 1fr));
+				justify-content: center;
+				align-items: center;
+				font-family: 'Work Sans';
+				font-size: 20px;
+			}
+
+			header {
+				display: grid;
+				grid-column: 2/3;
+				grid-row: 1/2;
+				justify-self: center;
+			}
+
+			header h1 {
+				color: white;
+			}
+
+			.content {
+				grid-column: 2/3;
+				border: 1px solid black;
+				background-color: rgba(78, 78, 78, 0.705);
+
+				display: flex;
+				height: 40rem;
+				gap: 20px;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				padding: 10px;
+			}
+
+			.display {
+				background-color: white;
+				min-width: 50rem;
+				min-height: 100px;
+				text-align: center;
+				display: grid;
+				grid-column: 2/3;
+				grid-row: 2/3;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.display p {
+				padding: 10px;
+				width: fit-content;
+				line-break: anywhere;
+			}
+
+			.buttons {
+				display: flex;
+				grid-column: 2/3;
+				gap: 10px;
+				grid-row: 3/4;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.buttons > button {
+				flex: 1;
+				height: 30px;
+			}
+			.form {
+				display: flex;
+				flex-direction: column;
+				grid-column: 2/3;
+				grid-row: 4/5;
+				justify-content: center;
+				align-items: center;
+				gap: 50px;
+			}
+			form {
+				display: flex;
+				flex-direction: column;
+				gap: 59px;
+			}
+
+			.clear {
+				width: 100px;
+			}
+
+			.active {
+				transform: scale(0.91);
+			}
+		</style>
+
+		<script>
+			const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+			const numbers = '1234567890';
+			const specialChars = '!"§$%&/()=?{[]}-_:.;,#+*~';
+			const buttons = document.querySelectorAll('[data-option]');
+			const form = document.querySelector('[name="pwd"]');
+			const pwLength = document.querySelector('.pwlength');
+			const display = document.querySelector('.display');
+			const clearAllButton = document.querySelector('.clear');
+			const copyButton = document.querySelector('.copy');
+
+			let passwordArray = [];
+			let displayArray = [];
+			let letterPressed = false;
+			let capitalPressed = false;
+			let numberPressed = false;
+			let specialPressed = false;
+
+			function populateArray(e) {
+				const option = e.target.dataset.option;
+				if (option === 'letters' && !letterPressed) {
+					passwordArray.push(...alphabet.split(''));
+					letterPressed = !letterPressed; //make sure to not add same items more than once
+				}
+				if (option === 'capitals' && !capitalPressed) {
+					passwordArray.push(...alphabet.toUpperCase().split(''));
+					capitalPressed = !capitalPressed;
+				}
+				if (option === 'numbers' && !numberPressed) {
+					passwordArray.push(...numbers.split(''));
+					numberPressed = !numberPressed;
+				}
+				if (option === 'special' && !specialPressed) {
+					passwordArray.push(...specialChars.split(''));
+					specialPressed = !specialPressed;
+				}
+				console.log(passwordArray);
+			}
+			function generatePassword(e) {
+				displayArray = [];
+				e.preventDefault();
+				let input = parseInt(form.value);
+				for (i = 1; i <= input; i++) {
+					let randomNumber = Math.floor(Math.random() * (passwordArray.length - 1));
+					displayArray.push(passwordArray[randomNumber]);
+				}
+				while (display.firstChild) display.removeChild(display.firstChild);
+				let newPassword = document.createElement('p');
+				newPassword.textContent = displayArray.join('');
+				display.appendChild(newPassword);
+			}
+
+			function clearAll() {
+				passwordArray = [];
+				letterPressed = capitalPressed = numberPressed = specialPressed = false;
+				while (display.firstChild) display.removeChild(display.firstChild); //clear display
+				displayArray = [];
+				buttons.forEach((button) => button.classList.remove('active'));
+				pwLength.reset(); //empty input field
+			}
+
+			function copyPassword() {
+				let copyText = display.querySelector('p').textContent;
+				navigator.clipboard.writeText(copyText);
+			}
+
+			pwLength.addEventListener('submit', generatePassword);
+			clearAllButton.addEventListener('click', clearAll);
+			copyButton.addEventListener('click', copyPassword);
+			buttons.forEach((button) => button.addEventListener('click', populateArray));
+			buttons.forEach((button) => button.addEventListener('click', () => button.classList.toggle('active')));
+		</script>
+	</body>
+</html>
