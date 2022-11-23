@@ -26,8 +26,10 @@
 			</div>
 			<div class="form">
 				<form class="pwlength">
-					<input type="tel" maxlength="3" name="pwd" id="pwd_input" placeholder="Password Length" />
-					<!-- TODO replace input type with slider for length number and add output element + JS to display current value -->
+					<label for="pwd_input" style="color: white">Password Length</label>
+					<div class="output">8</div>
+					<input name="pwd" type="range" min="8" max="200" value="8" step="1" id="pwd_input" />
+
 					<input type="submit" value="Generate Password" />
 				</form>
 				<button class="copy">Copy password</button>
@@ -101,6 +103,18 @@
 				line-break: anywhere;
 			}
 
+			.output,
+			label {
+				text-align: center;
+				color: white;
+				font-size: 18px;
+				font-weight: 700;
+			}
+
+			.output p {
+				margin: 0;
+			}
+
 			.buttons {
 				display: flex;
 				grid-column: 2/3;
@@ -147,7 +161,7 @@
 					min-height: 200px;
 				}
 				.content {
-					height: 30rem;
+					height: 35rem;
 				}
 				.form,
 				form {
@@ -166,6 +180,7 @@
 			const display = document.querySelector('.display');
 			const clearAllButton = document.querySelector('.clear');
 			const copyButton = document.querySelector('.copy');
+			const output = document.querySelector('.output');
 
 			let passwordArray = [];
 			let displayArray = [];
@@ -173,6 +188,10 @@
 			let capitalPressed = false;
 			let numberPressed = false;
 			let specialPressed = false;
+
+			function sliderOutput() {
+				output.textContent = form.value;
+			}
 
 			function populateArray(e) {
 				const option = e.target.dataset.option;
@@ -223,6 +242,7 @@
 			}
 
 			pwLength.addEventListener('submit', generatePassword);
+			form.addEventListener('input', sliderOutput);
 			clearAllButton.addEventListener('click', clearAll);
 			copyButton.addEventListener('click', copyPassword);
 			buttons.forEach((button) => button.addEventListener('click', populateArray));
