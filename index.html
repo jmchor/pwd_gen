@@ -198,6 +198,7 @@
 			}
 
 			function populateArray(e) {
+        // TODO add ability to remove items from array with pressing the same button again
 			        const { option } = e.target.dataset;
 			        if (option === 'letters' && !letterPressed) {
 			                passwordArray.push(...alphabet.split(''));
@@ -222,6 +223,7 @@
 			        const input = parseInt(form.value);
 			        // eslint-disable-next-line no-plusplus
 			        for (let i = 1; i <= input; i++) {
+                // TODO: replace math.random with crypto.getRandomValues
 			                const randomNumber = Math.floor(Math.random() * (passwordArray.length - 1));
 			                displayArray.push(passwordArray[randomNumber]);
 			        }
