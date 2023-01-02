@@ -1,3 +1,5 @@
+<!-- eslint-disable no-multi-assign -->
+<!-- eslint-disable no-plusplus -->
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -192,55 +194,56 @@
 			let specialPressed = false;
 
 			function sliderOutput() {
-				output.textContent = form.value;
+			        output.textContent = form.value;
 			}
 
 			function populateArray(e) {
-				const option = e.target.dataset.option;
-				if (option === 'letters' && !letterPressed) {
-					passwordArray.push(...alphabet.split(''));
-					letterPressed = !letterPressed; //make sure to not add same items more than once
-				}
-				if (option === 'capitals' && !capitalPressed) {
-					passwordArray.push(...alphabet.toUpperCase().split(''));
-					capitalPressed = !capitalPressed;
-				}
-				if (option === 'numbers' && !numberPressed) {
-					passwordArray.push(...numbers.split(''));
-					numberPressed = !numberPressed;
-				}
-				if (option === 'special' && !specialPressed) {
-					passwordArray.push(...specialChars.split(''));
-					specialPressed = !specialPressed;
-				}
-				console.log(passwordArray);
+			        const { option } = e.target.dataset;
+			        if (option === 'letters' && !letterPressed) {
+			                passwordArray.push(...alphabet.split(''));
+			                letterPressed = !letterPressed; // make sure to not add same items more than once
+			        }
+			        if (option === 'capitals' && !capitalPressed) {
+			                passwordArray.push(...alphabet.toUpperCase().split(''));
+			                capitalPressed = !capitalPressed;
+			        }
+			        if (option === 'numbers' && !numberPressed) {
+			                passwordArray.push(...numbers.split(''));
+			                numberPressed = !numberPressed;
+			        }
+			        if (option === 'special' && !specialPressed) {
+			                passwordArray.push(...specialChars.split(''));
+			                specialPressed = !specialPressed;
+			        }
 			}
 			function generatePassword(e) {
-				displayArray = [];
-				e.preventDefault();
-				let input = parseInt(form.value);
-				for (i = 1; i <= input; i++) {
-					let randomNumber = Math.floor(Math.random() * (passwordArray.length - 1));
-					displayArray.push(passwordArray[randomNumber]);
-				}
-				while (display.firstChild) display.removeChild(display.firstChild);
-				let newPassword = document.createElement('p');
-				newPassword.textContent = displayArray.join('');
-				display.appendChild(newPassword);
+			        displayArray = [];
+			        e.preventDefault();
+			        const input = parseInt(form.value);
+			        // eslint-disable-next-line no-plusplus
+			        for (let i = 1; i <= input; i++) {
+			                const randomNumber = Math.floor(Math.random() * (passwordArray.length - 1));
+			                displayArray.push(passwordArray[randomNumber]);
+			        }
+			        while (display.firstChild) display.removeChild(display.firstChild);
+			        const newPassword = document.createElement('p');
+			        newPassword.textContent = displayArray.join('');
+			        display.appendChild(newPassword);
 			}
 
 			function clearAll() {
-				passwordArray = [];
-				letterPressed = capitalPressed = numberPressed = specialPressed = false;
-				while (display.firstChild) display.removeChild(display.firstChild); //clear display
-				displayArray = [];
-				buttons.forEach((button) => button.classList.remove('active'));
-				pwLength.reset(); //empty input field
+			        passwordArray = [];
+			        // eslint-disable-next-line no-multi-assign
+			        letterPressed = capitalPressed = numberPressed = specialPressed = false;
+			        while (display.firstChild) display.removeChild(display.firstChild); // clear display
+			        displayArray = [];
+			        buttons.forEach((button) => button.classList.remove('active'));
+			        pwLength.reset(); // empty input field
 			}
 
 			function copyPassword() {
-				let copyText = display.querySelector('p').textContent;
-				navigator.clipboard.writeText(copyText);
+			        const copyText = display.querySelector('p').textContent;
+			        navigator.clipboard.writeText(copyText);
 			}
 
 			pwLength.addEventListener('submit', generatePassword);
